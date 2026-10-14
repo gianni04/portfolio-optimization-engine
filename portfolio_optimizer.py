@@ -17,9 +17,6 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 from scipy.optimize import minimize
 
-# ----------------------------------------------------------------------
-# 1. CONFIG
-# ----------------------------------------------------------------------
 
 # a small diversified universe: tech, banks, energy, healthcare, consumer
 TICKERS = ["AAPL", "MSFT", "JPM", "XOM", "JNJ", "PG", "V", "NVDA", "KO", "UNH"]
@@ -30,10 +27,6 @@ TRADING_DAYS = 252
 
 OUTPUT_DIR = "output"
 
-
-# ----------------------------------------------------------------------
-# 2. DATA
-# ----------------------------------------------------------------------
 
 def load_prices():
     """Download adjusted close prices for the universe."""
@@ -50,10 +43,6 @@ def compute_stats(prices):
     return daily_returns, mean_returns, cov_matrix
 
 
-# ----------------------------------------------------------------------
-# 3. PORTFOLIO MATH HELPERS
-# ----------------------------------------------------------------------
-
 def portfolio_return(weights, mean_returns):
     return float(np.dot(weights, mean_returns))
 
@@ -67,10 +56,6 @@ def portfolio_sharpe(weights, mean_returns, cov_matrix):
     vol = portfolio_volatility(weights, cov_matrix)
     return (ret - RISK_FREE_RATE) / vol
 
-
-# ----------------------------------------------------------------------
-# 4. MARKOWITZ MEAN-VARIANCE OPTIMIZATION
-# ----------------------------------------------------------------------
 
 def max_sharpe_portfolio(mean_returns, cov_matrix):
     """Find the weights that maximize the Sharpe ratio (tangency portfolio)."""
@@ -120,10 +105,6 @@ def efficient_frontier(mean_returns, cov_matrix, n_points=40):
     return target_returns, np.array(frontier_vol)
 
 
-# ----------------------------------------------------------------------
-# 5. BLACK-LITTERMAN MODEL
-# ----------------------------------------------------------------------
-
 def black_litterman(cov_matrix, market_weights, views_p, views_q, tau=0.05, risk_aversion=2.5):
     """
     Combine market-implied equilibrium returns with subjective investor views.
@@ -137,23 +118,18 @@ def black_litterman(cov_matrix, market_weights, views_p, views_q, tau=0.05, risk
     """
     sigma = cov_matrix.values
 
-    # step 1: reverse-optimize to get implied equilibrium excess returns (pi)
+    # implied equilibrium excess returns (pi)
     pi = risk_aversion * sigma @ market_weights
 
-    # step 2: uncertainty of the views (Omega) - diagonal, proportional to view variance
+    # view uncertainty (Omega), diagonal
     omega = np.diag(np.diag(views_p @ (tau * sigma) @ views_p.T))
 
-    # step 3: Black-Litterman posterior expected returns
     tau_sigma_inv = np.linalg.inv(tau * sigma)
     middle = np.linalg.inv(tau_sigma_inv + views_p.T @ np.linalg.inv(omega) @ views_p)
     bl_returns = middle @ (tau_sigma_inv @ pi + views_p.T @ np.linalg.inv(omega) @ views_q)
 
     return pd.Series(bl_returns, index=cov_matrix.index)
 
-
-# ----------------------------------------------------------------------
-# 6. RISK PARITY
-# ----------------------------------------------------------------------
 
 def risk_contribution(weights, cov_matrix):
     """Each asset's contribution to total portfolio variance."""
@@ -180,21 +156,15 @@ def risk_parity_portfolio(cov_matrix):
     return result.x
 
 
-# ----------------------------------------------------------------------
-# 7. MAIN
-# ----------------------------------------------------------------------
-
 def main():
     print("Downloading price history for:", TICKERS)
     prices = load_prices()
     daily_returns, mean_returns, cov_matrix = compute_stats(prices)
 
-    # --- Markowitz ---
     w_max_sharpe = max_sharpe_portfolio(mean_returns.values, cov_matrix.values)
     w_min_var = min_variance_portfolio(cov_matrix.values)
     frontier_returns, frontier_vols = efficient_frontier(mean_returns.values, cov_matrix.values)
 
-    # --- Black-Litterman ---
     # equal weights used as a simple market-cap proxy (student-project simplification)
     market_weights = np.repeat(1.0 / len(TICKERS), len(TICKERS))
 
@@ -212,10 +182,8 @@ def main():
     bl_returns = black_litterman(cov_matrix, market_weights, p_matrix, q_vector)
     w_bl = max_sharpe_portfolio(bl_returns.values, cov_matrix.values)
 
-    # --- Risk Parity ---
     w_risk_parity = risk_parity_portfolio(cov_matrix)
 
-    # --- summary table ---
     summary = pd.DataFrame({
         "Max Sharpe (Markowitz)": w_max_sharpe,
         "Min Variance (Markowitz)": w_min_var,
@@ -239,7 +207,6 @@ def main():
     summary.to_csv(f"{OUTPUT_DIR}/portfolio_weights.csv")
     stats.to_csv(f"{OUTPUT_DIR}/portfolio_stats.csv", index=False)
 
-    # --- plot efficient frontier with the 3 portfolios marked ---
     plt.figure(figsize=(9, 6))
     plt.plot(frontier_vols, frontier_returns, "b--", label="Efficient Frontier")
 
