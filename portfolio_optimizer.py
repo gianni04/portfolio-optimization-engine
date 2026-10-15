@@ -31,7 +31,7 @@ OUTPUT_DIR = "output"
 def load_prices():
     """Download adjusted close prices for the universe."""
     raw = yf.download(TICKERS, start=START_DATE, end=END_DATE, progress=False)["Close"]
-    raw = raw.dropna()
+    raw = raw[TICKERS].dropna()
     return raw
 
 
