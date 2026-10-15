@@ -108,6 +108,9 @@ def efficient_frontier(mean_returns, cov_matrix, n_points=40):
 def black_litterman(cov_matrix, market_weights, views_p, views_q, tau=0.05, risk_aversion=2.5):
     """
     Combine market-implied equilibrium returns with subjective investor views.
+    Returns the posterior as a total return (excess posterior + risk-free rate),
+    the same basis as the historical means, because max_sharpe_portfolio
+    subtracts the risk-free rate itself.
 
     cov_matrix     : covariance matrix (Sigma)
     market_weights : market-cap-proxy weights used to back out equilibrium returns
@@ -128,7 +131,7 @@ def black_litterman(cov_matrix, market_weights, views_p, views_q, tau=0.05, risk
     middle = np.linalg.inv(tau_sigma_inv + views_p.T @ np.linalg.inv(omega) @ views_p)
     bl_returns = middle @ (tau_sigma_inv @ pi + views_p.T @ np.linalg.inv(omega) @ views_q)
 
-    return pd.Series(bl_returns, index=cov_matrix.index)
+    return pd.Series(bl_returns + RISK_FREE_RATE, index=cov_matrix.index)
 
 
 def risk_contribution(weights, cov_matrix):

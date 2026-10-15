@@ -17,7 +17,9 @@ A short note with the method and results: [note/portfolio-optimization-engine.pd
 | Risk parity | each stock contributes the same share of total risk |
 
 Black-Litterman views: NVDA outperforms the average of AAPL and MSFT by 5% a
-year; JPM returns 8% a year.
+year; JPM returns 8% a year. Equilibrium returns and views are excess returns:
+the 3% risk-free rate is added back to the posterior before the max-Sharpe
+step, which subtracts it once.
 
 Data: daily prices 2019 to 2026, risk-free rate 3%.
 
@@ -35,7 +37,7 @@ python portfolio_optimizer.py
 | Portfolio | Expected return | Volatility | Sharpe |
 |---|---:|---:|---:|
 | Max Sharpe (Markowitz) | 37.4% | 25.1% | **1.37** |
-| Black-Litterman | 30.6% | 23.8% | 1.16 |
+| Black-Litterman | 23.7% | 18.8% | 1.10 |
 | Risk parity | 20.9% | 17.5% | 1.02 |
 | Min variance (Markowitz) | 15.6% | 15.8% | 0.79 |
 
@@ -43,23 +45,24 @@ python portfolio_optimizer.py
 
 | | Max Sharpe | Min variance | Black-Litterman | Risk parity |
 |---|---:|---:|---:|---:|
-| AAPL | 10.4% | 0.0% | 19.6% | 8.0% |
-| MSFT | 0.0% | 10.3% | 9.3% | 8.6% |
-| JPM | 2.5% | 0.3% | 9.8% | 8.5% |
-| XOM | 10.3% | 9.7% | 9.6% | 10.0% |
-| JNJ | 31.2% | 33.8% | 0.0% | 14.7% |
-| PG | 0.0% | 21.9% | 0.0% | 13.4% |
-| V | 0.0% | 0.0% | 18.0% | 8.7% |
-| NVDA | 39.2% | 1.3% | 18.2% | 6.1% |
-| KO | 6.4% | 20.5% | 0.0% | 12.9% |
-| UNH | 0.0% | 2.2% | 15.6% | 9.1% |
+| AAPL | 10.4% | 0.0% | 10.6% | 8.0% |
+| MSFT | 0.0% | 10.3% | 10.6% | 8.6% |
+| JPM | 2.5% | 0.3% | 6.0% | 8.5% |
+| XOM | 10.3% | 9.7% | 10.5% | 10.0% |
+| JNJ | 31.2% | 33.8% | 10.4% | 14.7% |
+| PG | 0.0% | 21.9% | 10.5% | 13.4% |
+| V | 0.0% | 0.0% | 10.4% | 8.7% |
+| NVDA | 39.2% | 1.3% | 10.1% | 6.1% |
+| KO | 6.4% | 20.5% | 10.4% | 12.9% |
+| UNH | 0.0% | 2.2% | 10.4% | 9.1% |
 
 Markowitz puts the portfolio in 6 stocks (NVDA + JNJ = 70%), which shows how
 sensitive it is to the estimated returns. Risk parity stays diversified
-(every stock between 6% and 15%) with a lower Sharpe. The NVDA view barely
-moves Black-Litterman: NVDA is 17.4% without views and 18.2% with them,
-because the 5% view is close to the 5.4% spread that the equilibrium returns
-already imply.
+(every stock between 6% and 15%) with a lower Sharpe. Without views,
+Black-Litterman holds the 10% equal weights it starts from. The NVDA view
+barely moves it (10.1% with the views) because the 5% view is close to the 5.4%
+spread that the equilibrium returns already imply. The JPM view does move it:
+8% is below the 9.8% implied, so JPM falls from 10% to 6.0%.
 
 ## Limitations
 
