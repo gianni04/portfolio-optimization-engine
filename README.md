@@ -56,8 +56,10 @@ python portfolio_optimizer.py
 
 Markowitz puts the portfolio in 6 stocks (NVDA + JNJ = 70%), which shows how
 sensitive it is to the estimated returns. Risk parity stays diversified
-(every stock between 6% and 15%) with a lower Sharpe. Black-Litterman follows
-the positive NVDA view (18.2%).
+(every stock between 6% and 15%) with a lower Sharpe. The NVDA view barely
+moves Black-Litterman: NVDA is 17.4% without views and 18.2% with them,
+because the 5% view is close to the 5.4% spread that the equilibrium returns
+already imply.
 
 ## Limitations
 
