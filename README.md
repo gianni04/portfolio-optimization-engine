@@ -1,7 +1,8 @@
 # Portfolio Optimization Engine
 
-Portfolio optimisation in Python: Markowitz efficient frontier,
-Black-Litterman and risk parity, compared on 10 US stocks.
+Portfolio optimisation in Python: Markowitz efficient frontier (Markowitz,
+1952), Black-Litterman (Black and Litterman, 1992) and risk parity (Maillard
+et al., 2010), compared on 10 US stocks.
 
 A short note with the method and results: [note/portfolio-optimization-engine.pdf](note/portfolio-optimization-engine.pdf).
 
@@ -14,7 +15,7 @@ A short note with the method and results: [note/portfolio-optimization-engine.pd
 | Markowitz, max Sharpe | tangency portfolio on the efficient frontier |
 | Markowitz, min variance | lowest-variance portfolio |
 | Black-Litterman | market equilibrium returns combined with investor views (tau = 0.05, risk aversion 2.5) |
-| Risk parity | each stock contributes the same share of total risk |
+| Risk parity | equal risk contribution: each stock contributes the same share of total risk |
 
 Black-Litterman views: NVDA outperforms the average of AAPL and MSFT by 5% a
 year; JPM returns 8% a year. Equilibrium returns and views are excess returns:
@@ -77,3 +78,11 @@ Python, NumPy, pandas, SciPy, Matplotlib, yfinance
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+## References
+
+Black, F. and Litterman, R. (1992). Global portfolio optimization. Financial Analysts Journal, 48(5), 28-43. https://doi.org/10.2469/faj.v48.n5.28
+
+Maillard, S., Roncalli, T. and Teiletche, J. (2010). The properties of equally weighted risk contribution portfolios. The Journal of Portfolio Management, 36(4), 60-70. https://doi.org/10.3905/jpm.2010.36.4.060
+
+Markowitz, H. (1952). Portfolio selection. The Journal of Finance, 7(1), 77-91. https://doi.org/10.2307/2975974
