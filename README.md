@@ -3,6 +3,8 @@
 Portfolio optimisation in Python: Markowitz efficient frontier,
 Black-Litterman and risk parity, compared on 10 US stocks.
 
+A short note with the method and results: [note/portfolio-optimization-engine.pdf](note/portfolio-optimization-engine.pdf).
+
 ![Python](https://img.shields.io/badge/Python-3.10+-blue) ![Data](https://img.shields.io/badge/data-Yahoo%20Finance-purple) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## What it does
